@@ -984,7 +984,7 @@ class AttachmentPagination(HybridPagination):
 class QuestionSerializer(serializers.Serializer):
     index = serializers.IntegerField(read_only=True)
     number = serializers.IntegerField(read_only=True)
-    type = serializers.CharField(read_only=True)
+    question_type = serializers.CharField(read_only=True, source='type')
     name = serializers.CharField(read_only=True)
     label = serializers.CharField(read_only=True)
     url = serializers.SerializerMethodField()
