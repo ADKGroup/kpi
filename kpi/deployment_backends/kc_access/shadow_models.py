@@ -10,6 +10,8 @@ from hashlib import md5
 from jsonfield import JSONField
 from collections import OrderedDict
 
+import kpi as kpi 
+from formpack import FormPack
 
 class ReadOnlyModelError(ValueError):
     pass
@@ -128,7 +130,8 @@ class LazyModelGroup:
             status = models.CharField(max_length=20,
                                       default=u'submitted_via_web')
             uuid = models.CharField(max_length=249, default=u'')
-
+            
+                
             @property
             def submission(self):
                 try:
@@ -155,7 +158,7 @@ class LazyModelGroup:
             instance = models.ForeignKey(_ReadOnlyInstance, related_name="attachments")
             media_file = models.FileField(upload_to=_ReadOnlyModel.upload_to, max_length=380)
             mimetype = models.CharField(max_length=50, null=False, blank=True, default='')
-
+            
             @property
             def filename(self):
                 return os.path.basename(self.media_file.name)
@@ -165,26 +168,26 @@ class LazyModelGroup:
                 qa_dict = self.instance.json
                 if self.filename not in qa_dict.values():
                     return None
-
+                
                 return qa_dict.keys()[qa_dict.values().index(self.filename)]
 
             @property
             def question(self):
-                if not self.question_name or not self.instance.xform.questions:
+                print "QUESTIONS: ==================== \n \n \n"
+                print self.instance.xform.questions
+                current_questions = self.get_questions(self.instance.xform.id_string)
+                if not self.question_name or not current_questions:
                     return None
-
-                for question in self.instance.xform.questions:
-                    if question['name'] == self.question_name:
-                        return question
-
+                for k, question in current_questions.items():
+                    if question.name == self.question_name:
+                        return question.name
                 return None
 
             @property
             def question_index(self):
                 if not self.question:
                     return self.id
-
-                return self.question['number']
+                return self.question[0]
 
             @property
             def can_view_submission(self):
@@ -193,7 +196,16 @@ class LazyModelGroup:
                 # Alternatively, can move this into User Profile or Asset permissions logic
 
                 return True
-
+            
+            def get_questions(self, current_id):
+                asset = kpi.models.Asset.objects.get(uid=current_id)
+                schemas = [v.to_formpack_schema() for v in asset.deployed_versions]
+                fpack = FormPack(versions=schemas[-1], id_string=current_id)
+                current_version = fpack.versions.keys()[-1]
+                fields = fpack.get_fields_for_versions(versions=current_version)
+                reordered_fields = OrderedDict([ (field.name, field) for field in fields ])
+                return reordered_fields
+                
         class _UserProfile(models.Model):
             '''
             From onadata/apps/main/models/user_profile.py
