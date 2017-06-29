@@ -51,12 +51,15 @@ $icon-font-size: 40px;
   }
 
   > div:not(.form-view__cell) {
-    padding: 0px 40px;
+    // padding: 0px 40px;
+    padding: 0px 40px 0 50px;
     margin-bottom: 20px;
 
     > h2 {
-      color: #6E777D;
+      color: #59636B;
       font-weight: normal;
+      font-family: Roboto;
+      font-size: 16px;
     }
   }
 
@@ -79,16 +82,19 @@ $icon-font-size: 40px;
     align-items: center;
 
     &__count {
-      color: #4E525F;
-      font-size: 1.2em;
+      color: #414453;
+      font-family: Roboto;
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: bold;
     }
   }
 
   &__grid {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    margin-left: -10px;
+    align-items: flex-start;
+    // margin-left: -8px;
 
     h5, h2 {
       font-size: 1.5em;
@@ -107,7 +113,6 @@ $icon-font-size: 40px;
       display: inline-block;
       cursor: pointer;
       background-color: lighten($cool-gray, 30%);
-
       &.col6 {
         width: 50%;
       }
@@ -119,10 +124,10 @@ $icon-font-size: 40px;
       }
 
       &.per-row6 {
-        display: inline-block;
-        margin: 10px 0 0 10px;
-        width: calc(16.6666666667% - 10px - 1px);
-        height: 16.6666666667%;
+        // display: inline-block;
+        margin: 8px 8px 0 0;
+        width: calc(16.6666666667% - 8px - 1px);
+
       }
 
       &.per-row10 {
@@ -203,7 +208,7 @@ $icon-font-size: 40px;
           box-shadow: none;
           cursor: pointer;
           position: relative;
-
+          margin-right: 10px;
           &:before {
             content: '\e803';
             font-family: "k-icons";
@@ -211,8 +216,12 @@ $icon-font-size: 40px;
             font-weight: normal;
             font-size: 36px;
             position: absolute;
-            top: 6px;
+            // top: 6px;
+            opacity: 0.75;
             color: $cool-gray;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
           }
         }
 
@@ -236,6 +245,8 @@ $icon-font-size: 40px;
 
         .Select-value {
           text-indent: -99999999px;
+          padding-left: 0px;
+          padding-right: 0px;
         }
       }
     }
