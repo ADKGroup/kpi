@@ -173,21 +173,21 @@ class LazyModelGroup:
 
             @property
             def question(self):
-                print "QUESTIONS: ==================== \n \n \n"
-                print self.instance.xform.questions
-                current_questions = self.get_questions(self.instance.xform.id_string)
-                if not self.question_name or not current_questions:
+                # current_questions = self.get_questions(self.instance.xform.id_string)
+                if not self.question_name or not self.instance.xform.questions:
                     return None
-                for k, question in current_questions.items():
-                    if question.name == self.question_name:
-                        return question.name
+                for question in self.instance.xform.questions:
+                    if question['name'] == self.question_name:
+                        print question
+                        return question
                 return None
 
             @property
             def question_index(self):
                 if not self.question:
                     return self.id
-                return self.question[0]
+
+                return self.question['number']
 
             @property
             def can_view_submission(self):
@@ -197,14 +197,14 @@ class LazyModelGroup:
 
                 return True
             
-            def get_questions(self, current_id):
-                asset = kpi.models.Asset.objects.get(uid=current_id)
-                schemas = [v.to_formpack_schema() for v in asset.deployed_versions]
-                fpack = FormPack(versions=schemas[-1], id_string=current_id)
-                current_version = fpack.versions.keys()[-1]
-                fields = fpack.get_fields_for_versions(versions=current_version)
-                reordered_fields = OrderedDict([ (field.name, field) for field in fields ])
-                return reordered_fields
+            # def get_questions(self, current_id):
+            #     asset = kpi.models.Asset.objects.get(uid=current_id)
+            #     schemas = [v.to_formpack_schema() for v in asset.deployed_versions]
+            #     fpack = FormPack(versions=schemas[-1], id_string=current_id)
+            #     current_version = fpack.versions.keys()[-1]
+            #     fields = fpack.get_fields_for_versions(versions=current_version)
+            #     reordered_fields = OrderedDict([ (field.name, field) for field in fields ])
+            #     return reordered_fields
                 
         class _UserProfile(models.Model):
             '''
