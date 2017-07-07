@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 import bem from "../../bem";
 import ui from "../../ui";
-// import {dataInterface} from '../../dataInterface';
+import {dataInterface} from '../../dataInterface';
 import Slider from "react-slick";
 import { t } from "../../utils";
 
@@ -67,6 +67,7 @@ let FormGalleryModal = React.createClass({
               changeActiveGalleryIndex={this.props.changeActiveGalleryIndex}
               closeModal={this.props.closeModal}
               setSearchTerm={this.props.setSearchTerm}
+              uid={this.props.uid}
             />
 
           </ui.Modal.Body>
@@ -77,55 +78,112 @@ let FormGalleryModal = React.createClass({
 });
 
 let FormGalleryModalSidebar = React.createClass({
-  goToFilter: function(gridLabel) {
+  getInitialState: function() {
+    return {
+      featuredRecord: null,
+      recordIndex:  this.props.filter === "question" ? this.props.galleryItemIndex + 1 : this.props.galleryIndex + 1
+    }
+  },
+  componentDidMount: function() {
+    console.log(this.props.uid);
+    this.getRecordByIndex();
+  },
+  getRecordByIndex: function () {
+    dataInterface
+      .loadMoreRecords (this.props.uid, 'submission', this.state.recordIndex, 1)
+      .done(response => {
+        response.loaded = true;
+        console.log(response);
+        this.setState({
+          featuredRecord: response.results[0].attachments.results
+        });
+      });
+  },
+  goToFilter: function(gridLabel, newFilterValue) {
     this.props.closeModal();
-    this.props.setSearchTerm(gridLabel);
+    this.props.setSearchTerm(gridLabel, newFilterValue);
   },
   render() {
-    let currentRecordIndex = this.props.filter === "question"
-      ? this.props.galleryItemIndex + 1
-      : this.props.galleryIndex + 1;
     let featuredItems = this.props.activeGalleryAttachments.slice();
     featuredItems.splice(this.props.galleryItemIndex, 1);
+    if(this.state.featuredRecord !== null && Object.keys(this.state.featuredRecord).length){
+      console.log(this.state.featuredRecord);
+    }
+    const recordLabel = t("Record") +" #"+this.state.recordIndex;
     return (
       <bem.AssetGallery__modalSidebar className="col4 open">
         <i className="toggle-info k-icon-close" onClick={this.props.closeModal} />
         <bem.AssetGallery__modalSidebarInfo>
-            <p>{t("Record")} #{currentRecordIndex}</p>
+            <p>{recordLabel}</p>
             <h3>{this.props.galleryTitle}</h3>
             <p>{this.props.date}</p>
         </bem.AssetGallery__modalSidebarInfo>
 
-        {this.props.activeGalleryAttachments != undefined && 
           <bem.AssetGallery__modalSidebarGridWrap>
-            <h5 onClick={() => this.goToFilter(this.props.galleryTitle)}>
-              {t("More for") + " " + this.props.galleryTitle}
-            </h5>
-            <bem.AssetGallery__modalSidebarGrid>
-              {featuredItems.filter((j, index) => index < 6).map(
-                function(item, j) {
-                  var divStyle = {
-                    backgroundImage: "url(" +
-                      item.medium_download_url +
-                      ")",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center center",
-                    backgroundSize: "cover"
-                  };
-                  return (
-                    <bem.AssetGallery__modalSidebarGridItem
-                      key={j}
-                      className="col6"
-                      onClick={() => this.props.changeActiveGalleryIndex(j)}
-                    >
-                      <div className="one-one" style={divStyle} />
-                    </bem.AssetGallery__modalSidebarGridItem>
-                  );
-                }.bind(this)
-              )}
-            </bem.AssetGallery__modalSidebarGrid>
+            {this.props.activeGalleryAttachments != undefined && 
+              <bem.AssetGallery__modalSidebarGridWrap__row>
+                <h5 onClick={() => this.goToFilter(this.props.galleryTitle, 'question')}>
+                  {t("More for") + " " + this.props.galleryTitle}
+                </h5>
+                <bem.AssetGallery__modalSidebarGrid>
+                  {featuredItems.filter((j, index) => index < 6).map(
+                    function(item, j) {
+                      var divStyle = {
+                        backgroundImage: "url(" +
+                          item.medium_download_url +
+                          ")",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center center",
+                        backgroundSize: "cover"
+                      };
+                      return (
+                        <bem.AssetGallery__modalSidebarGridItem
+                          key={j}
+                          className="col6"
+                          // onClick={() => this.props.changeActiveGalleryIndex(j)}
+                        >
+                          <div className="one-one" style={divStyle} />
+                        </bem.AssetGallery__modalSidebarGridItem>
+                      );
+                    }.bind(this)
+                  )}
+                </bem.AssetGallery__modalSidebarGrid>
+              </bem.AssetGallery__modalSidebarGridWrap__row>
+            }
+
+            {this.state.featuredRecord !== null &&
+              <bem.AssetGallery__modalSidebarGridWrap__row>
+                <h5 onClick={() => this.goToFilter(recordLabel.replace("#", ""), 'submission')}>
+                  {t("More for")} {recordLabel}
+                </h5>
+                <bem.AssetGallery__modalSidebarGrid>
+                  {this.state.featuredRecord.filter((j, index) => index < 6 ).map(
+                    function(item, j) {
+                      var divStyle = {
+                        backgroundImage: "url(" +
+                          item.medium_download_url +
+                          ")",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center center",
+                        backgroundSize: "cover"
+                      };
+                      return (
+                        <bem.AssetGallery__modalSidebarGridItem
+                          key={j}
+                          className="col6"
+                          // onClick={() => this.props.changeActiveGalleryIndex(j)}
+                        >
+                          <div className="one-one" style={divStyle} />
+                        </bem.AssetGallery__modalSidebarGridItem>
+                      );
+                    }.bind(this)
+                  )}
+                </bem.AssetGallery__modalSidebarGrid>
+              </bem.AssetGallery__modalSidebarGridWrap__row>
+            }
           </bem.AssetGallery__modalSidebarGridWrap>
-        }
+
+        
       </bem.AssetGallery__modalSidebar>
     );
   }

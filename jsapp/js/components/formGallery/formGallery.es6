@@ -25,7 +25,7 @@ var FormGallery = React.createClass({
       searchTerm: "",
       filter: {
         source: "question",
-        label: t("Group by Question"),
+        label: t("Filter by Question"),
         searchable: false,
         clearable: false
       },
@@ -52,7 +52,8 @@ var FormGallery = React.createClass({
       galleryIndex: 0,
       galleryItemIndex: 0,
       galleryTitle: "",
-      galleryDate: ""
+      galleryDate: "",
+      gridRowLabels: [],
     };
   },
   componentDidMount: function() {
@@ -79,7 +80,7 @@ var FormGallery = React.createClass({
     });
   },
   // FILTER
-  switchFilter(value) {
+  switchFilter(value, term) {
     var label;
     var newFilter = value;
     for (var i = 0; i < this.state.filterOptions.length; i++) {
@@ -97,7 +98,6 @@ var FormGallery = React.createClass({
         response.loaded = true;
         this.setState(this.getInitialState());
         this.forceUpdate();
-
         this.setState({
           filter: {
             source: newFilter,
@@ -106,19 +106,25 @@ var FormGallery = React.createClass({
           assets: response,
           hasMoreRecords: newFilter == "submission"
             ? response.next
-            : this.state.hasMoreRecords //Check if more records exist!
+            : this.state.hasMoreRecords, //Check if more records exist!
+          searchTerm: term || ''
         });
       });
   },
-  setSearchTerm(filter) {
-    let term = filter.target ? filter.target.value : filter; //Check if an event was passed or string
-    this.setState({ searchTerm: term });
+  setSearchTerm(ev, newFilterValue) {
+    console.log(ev);
+    let term = (ev !== null && ev.target !== undefined) ? ev.target.value : ev || ''; //Check if an event was passed or string
+    if(newFilterValue){
+      this.switchFilter(newFilterValue, term);
+    }else{
+      this.setState({ searchTerm: term });
+    }
   },
 
   // Pagination
   loadMoreAttachments(galleryIndex, galleryPage) {
     this.state.assets.loaded = false;
-    dataInterface.loadQuestionAttachment(
+    dataInterface.loadAttachmentsByFilterAndIndex(
         this.props.uid,
         this.state.filter.source,
         galleryIndex,
@@ -229,10 +235,11 @@ var FormGallery = React.createClass({
           <FormGalleryFilter
             attachments_count={this.state.assets.attachments_count}
             currentFilter={this.state.filter}
-            filters={this.state.filterOptions}
+            groupByValues={this.state.filterOptions}
             switchFilter={this.switchFilter}
             setSearchTerm={this.setSearchTerm}
             searchTerm={this.state.searchTerm}
+            searchFilters={this.state.assets.results}
           />
 
           {this.state.assets.results.map(
@@ -300,6 +307,7 @@ var FormGallery = React.createClass({
                 galleryDate={this.state.galleryDate}
                 activeGalleryAttachments={modalFriendlyAttachments}
                 formatDate={this.formatDate}
+                uid={this.props.uid}
               />
             : null}
         </bem.AssetGallery>

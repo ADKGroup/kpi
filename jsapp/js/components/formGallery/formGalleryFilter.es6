@@ -5,7 +5,33 @@ import { t } from "../../utils";
 import Select from "react-select";
 
 let FormGalleryFilter = React.createClass({
+  getInitialState(){
+    return{
+      availableOptions: null
+    }
+  },
+  componentDidMount: function(){
+    this.setAvailableOptions(this.props.searchFilters);
+    
+  },
+  setAvailableOptions: function (options) {
+    console.log(options);
+    const availableOptions = options.map( item =>  {
+      const searchVal = item.name || `${t("Record")} ${item.index + 1}`;
+
+      const newOpt = {
+        value: searchVal,
+        label: searchVal,
+      }
+      return newOpt;
+    });
+    this.setState({
+      availableOptions,
+    }, ()=>( console.log(this.state.availableOptions)));
+
+  },
   render() {
+    const placeholderText = `Filter by ${this.props.currentFilter.source == 'question' ? t("Question") : t("Record")}`;
     return (
       <bem.AssetGallery__heading>
         <div className="col6">
@@ -15,24 +41,32 @@ let FormGalleryFilter = React.createClass({
         </div>
         <div className="col6">
           <bem.AssetGallery__headingSearchFilter className="section">
-            <input
-              className="text-display"
-              placeholder={this.props.currentFilter.label}
-              onChange={this.props.setSearchTerm}
-              value={this.props.searchTerm}
-            />
             <Select
               ref="filterSelect"
-              className="icon-button-select"
-              options={this.props.filters}
+              className="text-display"
+              options={this.state.availableOptions}
               simpleValue
+              placeholder={placeholderText}
               name="selected-filter"
-              value={this.props.currentFilter.source}
-              onChange={this.props.switchFilter}
+              value={this.props.searchTerm}
+              onChange={this.props.setSearchTerm}
               autoBlur={true}
-              searchable={false}
+              searchable={true}
             />
+            <ui.PopoverMenu type='blur' 
+              triggerLabel={<i className={`k-icon-settings`}/>}>
+              {this.props.groupByValues.map((item, index) =>{
+                return (
+                  <bem.PopoverMenu__link 
+                    key={'groupByValue-' + index}
+                    onClick={() => this.props.switchFilter(item.value)}>
+                    {item.label}&nbsp;
+                  </bem.PopoverMenu__link>
+                );
+              })}
+            </ui.PopoverMenu>
           </bem.AssetGallery__headingSearchFilter>
+          
         </div>
       </bem.AssetGallery__heading>
     );

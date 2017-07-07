@@ -183,7 +183,7 @@ $icon-font-size: 40px;
 
       .text-display {
         display: inline-block;
-        padding: 10px;
+        // padding: 10px;
         border-radius: 2px;
         border: none;
         background-color: #fff;
@@ -197,58 +197,60 @@ $icon-font-size: 40px;
         display: inline-block;
         margin-left: 10px;
       }
-
-      .icon-button-select {
-        .Select-control {
-          border: none;
-          width: 32px;
-          height: 32px;
-          border-radius: 0px;
-          background: transparent;
-          box-shadow: none;
-          cursor: pointer;
-          position: relative;
-          margin-right: 10px;
-          &:before {
-            content: '\e803';
-            font-family: "k-icons";
-            font-style: normal;
-            font-weight: normal;
-            font-size: 36px;
-            position: absolute;
-            // top: 6px;
-            opacity: 0.75;
-            color: $cool-gray;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-          }
-        }
-
-        .Select-placeholder {
-          display: none;
-        }
-
-        .Select-menu-outer {
-          top: 15px;
-          right: 0px;
-          width: 200px;
-        }
-
-        .Select-clear-zone {
-          display: none;
-        }
-
-        .Select-arrow-zone {
-          display: none;
-        }
-
-        .Select-value {
-          text-indent: -99999999px;
-          padding-left: 0px;
-          padding-right: 0px;
-        }
+      .Select-control {
+        border: 0px;
       }
+      // .icon-button-select {
+      //   .Select-control {
+      //     border: none;
+      //     width: 32px;
+      //     height: 32px;
+      //     border-radius: 0px;
+      //     background: transparent;
+      //     box-shadow: none;
+      //     cursor: pointer;
+      //     position: relative;
+      //     margin-right: 10px;
+      //     &:before {
+      //       content: '\e803';
+      //       font-family: "k-icons";
+      //       font-style: normal;
+      //       font-weight: normal;
+      //       font-size: 36px;
+      //       position: absolute;
+      //       // top: 6px;
+      //       opacity: 0.75;
+      //       color: $cool-gray;
+      //       top: 50%;
+      //       left: 50%;
+      //       transform: translate(-50%, -50%);
+      //     }
+      //   }
+
+      //   .Select-placeholder {
+      //     display: none;
+      //   }
+
+      //   .Select-menu-outer {
+      //     top: 15px;
+      //     right: 0px;
+      //     width: 200px;
+      //   }
+
+      //   .Select-clear-zone {
+      //     display: none;
+      //   }
+
+      //   .Select-arrow-zone {
+      //     display: none;
+      //   }
+
+      //   .Select-value {
+      //     text-indent: -99999999px;
+      //     padding-left: 0px;
+      //     padding-right: 0px;
+      //   }
+      // }
     }
   }
 
@@ -461,8 +463,10 @@ $icon-font-size: 40px;
     }
 
     &__sidebar-grid-wrap {
-      margin: 30px;
       height: calc(100% - 260px);
+      &__row{
+        margin: 30px;
+      }
     }
   }
 }

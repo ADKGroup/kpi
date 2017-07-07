@@ -223,6 +223,7 @@ bem.AssetGallery__modalCarouselTopbar = bem.AssetGallery.__('modal__carousel__to
 bem.AssetGallery__modalSidebar = bem.AssetGallery.__('modal__sidebar', '<div>');
 bem.AssetGallery__modalSidebarInfo = bem.AssetGallery.__('modal__sidebar-info', '<div>');
 bem.AssetGallery__modalSidebarGridWrap = bem.AssetGallery.__('modal__sidebar-grid-wrap', '<div>');
+bem.AssetGallery__modalSidebarGridWrap__row = bem.AssetGallery.__('modal__sidebar-grid-wrap__row', '<div>');
 bem.AssetGallery__modalSidebarGrid = bem.AssetGallery.__('modal__sidebar__grid', '<div>');
 bem.AssetGallery__modalSidebarGridItem = bem.AssetGallery.__('modal__sidebar__grid-item', '<div>');
 
