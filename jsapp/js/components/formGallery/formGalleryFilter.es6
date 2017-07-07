@@ -12,13 +12,10 @@ let FormGalleryFilter = React.createClass({
   },
   componentDidMount: function(){
     this.setAvailableOptions(this.props.searchFilters);
-    
   },
   setAvailableOptions: function (options) {
-    console.log(options);
     const availableOptions = options.map( item =>  {
       const searchVal = item.name || `${t("Record")} ${item.index + 1}`;
-
       const newOpt = {
         value: searchVal,
         label: searchVal,
@@ -27,7 +24,7 @@ let FormGalleryFilter = React.createClass({
     });
     this.setState({
       availableOptions,
-    }, ()=>( console.log(this.state.availableOptions)));
+    });
 
   },
   render() {
@@ -53,11 +50,11 @@ let FormGalleryFilter = React.createClass({
               autoBlur={true}
               searchable={true}
             />
-            <ui.PopoverMenu type='blur' 
+            <ui.PopoverMenu type='blur'
               triggerLabel={<i className={`k-icon-settings`}/>}>
               {this.props.groupByValues.map((item, index) =>{
                 return (
-                  <bem.PopoverMenu__link 
+                  <bem.PopoverMenu__link
                     key={'groupByValue-' + index}
                     onClick={() => this.props.switchFilter(item.value)}>
                     {item.label}&nbsp;
@@ -66,7 +63,7 @@ let FormGalleryFilter = React.createClass({
               })}
             </ui.PopoverMenu>
           </bem.AssetGallery__headingSearchFilter>
-          
+
         </div>
       </bem.AssetGallery__heading>
     );
